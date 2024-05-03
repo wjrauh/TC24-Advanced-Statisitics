@@ -1,0 +1,28 @@
+import pandas as pd
+import sprt
+import numpy as np
+import statistics as st
+
+df = pd.DataFrame(_arg1)
+
+a = 0.05
+b = 0.1
+h0 = st.mean(df['Cumulative Control'])
+h1 = st.mean(df['Cumulative Test'])
+values = np.array(df['Cumulative Test'])
+test = sprt.SPRTPoisson(h0=h0, h1=h1, alpha=a, beta=b, values = values)
+
+
+lower = {"yl": test._yl}
+upper = {"yu": test._yu}
+cumulative = {"cum_val": test.cum_values}
+
+
+df1 = pd.DataFrame(lower)
+df2 = pd.DataFrame(upper)
+df3 = pd.DataFrame(cumulative)
+
+df5 = df1.combine_first(df2)
+df6 = df5.combine_first(df3)
+df7 = df.combine_first(df6)
+return df7.to_dict(orient = 'list')
